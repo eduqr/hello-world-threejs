@@ -12,13 +12,31 @@ const camera = new THREE.PerspectiveCamera(
 
 const renderer = new THREE.WebGLRenderer();
 
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 document.body.appendChild(renderer.domElement);
 
-const cube = theCubeMaker(5, 3, 1, 0xede8be);
-const cubeTwo = theCubeMaker(8, 1, 1, 0x639463);
-const cubeThree = theCubeMaker(1, 1, 1, 0x94637d);
+window.addEventListener("resize", () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+document.addEventListener("mousedown", onDocumentMouseDown, false);
+document.addEventListener("mousemove", onDocumentMouseMove, false);
+
+const cube = theCubeMaker(
+  5,
+  3,
+  1,
+  0xede8be,
+  "/experiments/01-example/index.html"
+);
+const cubeTwo = theCubeMaker(8, 1, 1, 0x639463, "");
+const cubeThree = theCubeMaker(1, 1, 1, 0x94637d, "");
 const textMesh = await printText("welcome", 0xdeb887, 1, 0);
 
 scene.add(cube, cubeTwo, cubeThree, textMesh);
@@ -46,10 +64,12 @@ function animate() {
 
 renderer.setAnimationLoop(animate);
 
-function theCubeMaker(width, height, depth, hexColor) {
+function theCubeMaker(width, height, depth, hexColor, url) {
   const cube = new THREE.BoxGeometry(width, height, depth);
   const material = new THREE.MeshBasicMaterial({ color: hexColor });
-  return new THREE.Mesh(cube, material);
+  const mesh = new THREE.Mesh(cube, material);
+  mesh.userData.URL = url;
+  return mesh;
 }
 
 async function printText(myText, hexColor, fontSize, depth) {
@@ -67,4 +87,28 @@ async function printText(myText, hexColor, fontSize, depth) {
 
   const textMaterial = new THREE.MeshBasicMaterial({ color: hexColor });
   return new THREE.Mesh(geometry, textMaterial);
+}
+
+function onDocumentMouseDown(event) {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+
+  const intersects = raycaster.intersectObjects(scene.children);
+
+  if (intersects.length > 0 && intersects[0].object.userData.URL) {
+    window.location.href = intersects[0].object.userData.URL;
+  }
+}
+
+function onDocumentMouseMove(event) {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+
+  const intersects = raycaster.intersectObjects(scene.children);
+  const clickable = intersects.length > 0 && intersects[0].object.userData.URL;
+  document.body.style.cursor = clickable ? "pointer" : "default";
 }

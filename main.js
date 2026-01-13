@@ -19,11 +19,22 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 
 document.body.appendChild(renderer.domElement);
 
-window.addEventListener("resize", () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
+function onWindowResize() {
+  const aspect = window.innerWidth / window.innerHeight;
+  camera.aspect = aspect;
+
+  // Ajustar para mobile alejando la cam
+  if (aspect < 1) {
+    camera.position.z = 15 / aspect;
+  } else {
+    camera.position.z = 12;
+  }
+
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
-});
+}
+
+window.addEventListener("resize", onWindowResize);
 
 document.addEventListener("mousedown", onDocumentMouseDown, false);
 document.addEventListener("mousemove", onDocumentMouseMove, false);
@@ -46,7 +57,7 @@ cubeTwo.position.x = 5;
 textMesh.position.y = 3;
 textMesh.position.z = 1;
 
-camera.position.z = 10;
+onWindowResize();
 
 function animate() {
   cube.rotation.x += 0.06;

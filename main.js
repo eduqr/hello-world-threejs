@@ -9,42 +9,19 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-
 const renderer = new THREE.WebGLRenderer();
-
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
 renderer.setSize(window.innerWidth, window.innerHeight);
-
 document.body.appendChild(renderer.domElement);
-
-function onWindowResize() {
-  const aspect = window.innerWidth / window.innerHeight;
-  camera.aspect = aspect;
-
-  // Ajustar para mobile alejando la cam
-  if (aspect < 1) {
-    camera.position.z = 15 / aspect;
-  } else {
-    camera.position.z = 12;
-  }
-
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-}
-
-window.addEventListener("resize", onWindowResize);
-
-document.addEventListener("mousedown", onDocumentMouseDown, false);
-document.addEventListener("mousemove", onDocumentMouseMove, false);
 
 const cube = theCubeMaker(
   5,
   3,
   1,
   0xede8be,
-  "/experiments/01-example/index.html"
+  "/experiments/01-lines/index.html"
 );
 const cubeTwo = theCubeMaker(8, 1, 1, 0x639463, "");
 const cubeThree = theCubeMaker(1, 1, 1, 0x94637d, "");
@@ -57,7 +34,12 @@ cubeTwo.position.x = 5;
 textMesh.position.y = 3;
 textMesh.position.z = 1;
 
+window.addEventListener("resize", onWindowResize);
+document.addEventListener("mousedown", onDocumentMouseDown, false);
+document.addEventListener("mousemove", onDocumentMouseMove, false);
+
 onWindowResize();
+renderer.setAnimationLoop(animate);
 
 function animate() {
   cube.rotation.x += 0.06;
@@ -72,8 +54,6 @@ function animate() {
 
   renderer.render(scene, camera);
 }
-
-renderer.setAnimationLoop(animate);
 
 function theCubeMaker(width, height, depth, hexColor, url) {
   const cube = new THREE.BoxGeometry(width, height, depth);
@@ -122,4 +102,19 @@ function onDocumentMouseMove(event) {
   const intersects = raycaster.intersectObjects(scene.children);
   const clickable = intersects.length > 0 && intersects[0].object.userData.URL;
   document.body.style.cursor = clickable ? "pointer" : "default";
+}
+
+function onWindowResize() {
+  const aspect = window.innerWidth / window.innerHeight;
+  camera.aspect = aspect;
+
+  // Ajustar para mobile alejando la cam
+  if (aspect < 1) {
+    camera.position.z = 15 / aspect;
+  } else {
+    camera.position.z = 12;
+  }
+
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
 }

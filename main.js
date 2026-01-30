@@ -1,17 +1,21 @@
 import * as THREE from "three";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 import { FontLoader } from "three/addons/loaders/FontLoader.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
   60,
   window.innerWidth / window.innerHeight,
   0.1,
-  1000
+  1000,
 );
 const renderer = new THREE.WebGLRenderer();
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -21,16 +25,22 @@ const cube = theCubeMaker(
   3,
   1,
   0xede8be,
-  "/experiments/01-lines/index.html"
+  "/experiments/01-lines/index.html",
 );
-const cubeTwo = theCubeMaker(8, 1, 1, 0x639463, "");
-const cubeThree = theCubeMaker(1, 1, 1, 0x94637d, "");
+const cubeTwo = theCubeMaker(
+  1,
+  1,
+  1,
+  0x94637d,
+  "/experiments/02-models/index.html",
+);
+const cubeThree = theCubeMaker(8, 1, 1, 0x639463, "");
 const textMesh = await printText("welcome", 0xdeb887, 1, 0);
 
 scene.add(cube, cubeTwo, cubeThree, textMesh);
 
 cube.position.x = -5;
-cubeTwo.position.x = 5;
+cubeThree.position.x = 5;
 textMesh.position.y = 3;
 textMesh.position.z = 1;
 
@@ -42,13 +52,14 @@ onWindowResize();
 renderer.setAnimationLoop(animate);
 
 function animate() {
+  controls.update();
   cube.rotation.x += 0.06;
 
-  cubeTwo.rotation.x -= 0.03;
-  cubeTwo.rotation.y += 0.05;
-  cubeTwo.rotation.z += 0.01;
+  cubeThree.rotation.x -= 0.03;
+  cubeThree.rotation.y += 0.05;
+  cubeThree.rotation.z += 0.01;
 
-  cubeThree.rotation.y -= 0.02;
+  cubeTwo.rotation.y -= 0.02;
 
   textMesh.rotation.x += 0.04;
 

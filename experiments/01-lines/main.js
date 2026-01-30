@@ -8,7 +8,7 @@ const camera = new THREE.PerspectiveCamera(
   45,
   window.innerWidth / window.innerHeight,
   1,
-  500
+  500,
 );
 
 camera.position.set(0, 0, 100);
@@ -26,14 +26,14 @@ const scene = new THREE.Scene();
 const lastPoint = new THREE.Vector3(
   Math.random() * 50 - 25,
   Math.random() * 50 - 25,
-  Math.random() * 50 - 25
+  Math.random() * 50 - 25,
 );
 
 for (let i = 0; i < 50; i++) {
   const nextPoint = new THREE.Vector3(
     Math.random() * 60 - 30,
     Math.random() * 60 - 30,
-    Math.random() * 60 - 30
+    Math.random() * 60 - 30,
   );
 
   const geometry = new THREE.BufferGeometry().setFromPoints([

@@ -8,7 +8,7 @@ const camera = new THREE.PerspectiveCamera(
   60,
   window.innerWidth / window.innerHeight,
   0.1,
-  1000,
+  1000
 );
 const renderer = new THREE.WebGLRenderer();
 const raycaster = new THREE.Raycaster();
@@ -25,22 +25,24 @@ const cube = theCubeMaker(
   3,
   1,
   0xede8be,
-  "/experiments/01-lines/index.html",
+  "/experiments/01-lines/index.html"
 );
 const cubeTwo = theCubeMaker(
   1,
   1,
   1,
   0x94637d,
-  "/experiments/02-models/index.html",
+  "/experiments/02-models/index.html"
 );
 const cubeThree = theCubeMaker(
   8,
   1,
   1,
   0x639463,
-  "/experiments/03-particles/index.html",
+  "/experiments/03-particles/index.html"
 );
+
+const githubCube = await githubCubeMaker();
 const textMesh = await printText("welcome", 0xdeb887, 1, 0);
 
 const light = new THREE.DirectionalLight(0xffffff, 3);
@@ -49,9 +51,21 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 light.position.set(-1, 2, 4);
 lightTwo.position.set(1, -2, -4);
 
-scene.add(cube, cubeTwo, cubeThree, textMesh, light, lightTwo, ambientLight);
+scene.add(
+  cube,
+  cubeTwo,
+  cubeThree,
+  githubCube,
+  textMesh,
+  light,
+  lightTwo,
+  ambientLight
+);
+
 cube.position.x = -5;
 cubeThree.position.x = 5;
+githubCube.position.x = 11;
+githubCube.position.y = 6;
 textMesh.position.y = 3;
 textMesh.position.z = 1;
 
@@ -72,6 +86,9 @@ function animate() {
 
   cubeTwo.rotation.y -= 0.02;
 
+  githubCube.rotation.x += 0.01;
+  githubCube.rotation.y += 0.02;
+
   textMesh.rotation.x += 0.04;
 
   renderer.render(scene, camera);
@@ -85,6 +102,28 @@ function theCubeMaker(width, height, depth, hexColor, url) {
   return mesh;
 }
 
+async function githubCubeMaker() {
+  const textureLoader = new THREE.TextureLoader();
+  const texture = await textureLoader.loadAsync("/img/github-logo.png");
+  const material = new THREE.MeshPhongMaterial({
+    color: 0xffffff,
+    map: texture,
+    transparent: false
+  });
+  const geometry = new THREE.BoxGeometry(1, 1, 1);
+  const mesh = new THREE.Mesh(geometry, [
+    material,
+    material,
+    material,
+    material,
+    material,
+    material
+  ]);
+
+  mesh.userData.URL = "https://github.com/eduqr/hello-world-threejs";
+  return mesh;
+}
+
 async function printText(myText, hexColor, fontSize, depth) {
   const loader = new FontLoader();
   const font = await loader.loadAsync("fonts/helvetiker_regular.typeface.json");
@@ -93,7 +132,7 @@ async function printText(myText, hexColor, fontSize, depth) {
     font: font,
     size: fontSize,
     depth: depth,
-    curveSegments: 24,
+    curveSegments: 24
   });
 
   geometry.center();

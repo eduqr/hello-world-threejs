@@ -37,8 +37,13 @@ const cubeTwo = theCubeMaker(
 const cubeThree = theCubeMaker(8, 1, 1, 0x639463, "");
 const textMesh = await printText("welcome", 0xdeb887, 1, 0);
 
-scene.add(cube, cubeTwo, cubeThree, textMesh);
+const light = new THREE.DirectionalLight(0xffffff, 3);
+const lightTwo = new THREE.DirectionalLight(0xffffff, 1);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+light.position.set(-1, 2, 4);
+lightTwo.position.set(1, -2, -4);
 
+scene.add(cube, cubeTwo, cubeThree, textMesh, light, lightTwo, ambientLight);
 cube.position.x = -5;
 cubeThree.position.x = 5;
 textMesh.position.y = 3;
@@ -68,7 +73,7 @@ function animate() {
 
 function theCubeMaker(width, height, depth, hexColor, url) {
   const cube = new THREE.BoxGeometry(width, height, depth);
-  const material = new THREE.MeshBasicMaterial({ color: hexColor });
+  const material = new THREE.MeshPhongMaterial({ color: hexColor });
   const mesh = new THREE.Mesh(cube, material);
   mesh.userData.URL = url;
   return mesh;

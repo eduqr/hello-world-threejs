@@ -34,7 +34,13 @@ const cubeTwo = theCubeMaker(
   0x94637d,
   "/experiments/02-models/index.html",
 );
-const cubeThree = theCubeMaker(8, 1, 1, 0x639463, "");
+const cubeThree = theCubeMaker(
+  8,
+  1,
+  1,
+  0x639463,
+  "/experiments/03-particles/index.html",
+);
 const textMesh = await printText("welcome", 0xdeb887, 1, 0);
 
 const light = new THREE.DirectionalLight(0xffffff, 3);
